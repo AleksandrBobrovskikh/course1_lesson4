@@ -4,7 +4,8 @@ import java.util.Random;
 import java.util.Scanner;
 
 public class HomeWorkApp {
-    public static int SIZE = 3;
+    public static int SIZE = 5;
+    public static int DOT_TO_WIN = 4;
     public static char DOT_EMPTY = '.';
     public static char DOT_X = 'X';
     public static char DOT_O = 'O';
@@ -71,13 +72,95 @@ public class HomeWorkApp {
         map[y][x] = DOT_O;
     }
 
-    public static boolean checkWin(char symbol) {
-        for (int i = 0; i < SIZE; i++)
-            if ((map[i][0] == symbol && map[i][1] == symbol && map[i][2] == symbol) ||
-                    (map[0][i] == symbol && map[1][i] == symbol && map[2][i] == symbol))
+    public static boolean checkWin(char dot) {
+        int hor, ver;
+        int diagMain, diagReverse;
+        for (int i = 0; i < SIZE; i++) {
+            hor = 0;
+            ver = 0;
+            for (int j = 0; j < SIZE; j++) {
+                if (map[i][j] == dot) {
+                    hor++;
+                } else if (map[i][j] != dot && hor < DOT_TO_WIN) {
+                    hor = 0;
+                }
+                if (map[j][i] == dot) {
+                    ver++;
+                }   else if (map[j][i] != dot && ver < DOT_TO_WIN) {
+                    ver = 0;
+                }
+            }
+            if (hor >= DOT_TO_WIN || ver >= DOT_TO_WIN) {
                 return true;
-        return (map[0][0] == symbol && map[1][1] == symbol && map[2][2] == symbol) ||
-                (map[2][0] == symbol && map[1][1] == symbol && map[0][2] == symbol);
+            }
+        }
+
+        for (int j = 0; j < SIZE; j++) {
+            diagMain = 0;
+            for (int i = 0; i < SIZE; i++) {
+                int k = j + i;
+                if (k < SIZE) {
+                    if (map[i][k] == dot) {
+                        diagMain++;
+                    } else if (map[i][k] != dot && diagMain < DOT_TO_WIN) {
+                        diagMain = 0;
+                    }
+                }
+                if (diagMain >= DOT_TO_WIN) {
+                    return true;
+                }
+            }
+        }
+        for (int j = 1; j < SIZE; j++) {
+            diagMain = 0;
+            for (int i = 0; i < SIZE; i++) {
+                int k = j + i;
+                if (k < SIZE) {
+                    if (map[k][j] == dot) {
+                        diagMain++;
+                    } else if (map[k][j] != dot && diagMain < DOT_TO_WIN) {
+                        diagMain = 0;
+                    }
+                }
+                if (diagMain >= DOT_TO_WIN) {
+                    return true;
+                }
+            }
+        }
+        for (int j = 0; j < SIZE; j++) {
+            diagReverse = 0;
+            for (int i = 0; i < SIZE; i++) {
+                int k = (SIZE - 1) - i;
+                int l = j + i;
+                if (k >= 0 && l < SIZE) {
+                    if (map[l][k] == dot) {
+                        diagReverse++;
+                    } else if (map[l][k] != dot && diagReverse < DOT_TO_WIN) {
+                        diagReverse = 0;
+                    }
+                }
+                if (diagReverse >= DOT_TO_WIN) {
+                    return true;
+                }
+            }
+        }
+        for (int j = 1; j < SIZE; j++) {
+            diagReverse = 0;
+            for (int i = 0; i < SIZE; i++) {
+                int k = (SIZE - 1) - j - i;
+                if (k >= 0) {
+                    if (map[i][k] == dot) {
+                        diagReverse++;
+                    } else if (map[i][k] != dot && diagReverse < DOT_TO_WIN) {
+                        diagReverse = 0;
+                    }
+                }
+                if (diagReverse >= DOT_TO_WIN) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public static void main(String[] args) {
